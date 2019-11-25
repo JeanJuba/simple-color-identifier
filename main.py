@@ -1,33 +1,35 @@
 import imageio
 import colorsys
+import datetime
 
 
 def is_green(val=()):
-    if (val[0]*360 > 80) and (val[0]*360 < 180):
+    if (val[0] * 360 > 80) and (val[0] * 360 < 180):
         return True
     else:
         return False
 
 
 def is_red(val=()):
-    if(0 < val[0] * 360 < 20) or (350 < val[0] * 360 < 360):
+    if (0 < val[0] * 360 < 20) or (350 < val[0] * 360 < 360):
         return True
     else:
         return False
 
 
 def is_yellow(val=()):
-    if (val[0]*360 > 30) and (val[0]*360 < 70):
+    if (val[0] * 360 > 30) and (val[0] * 360 < 70):
         return True
     else:
         return False
 
 
-def is_blank(v=[]):
-    return v[0] == 0 and v[1] == 0 and v[2] == 0
+def is_blank(vector):
+    return vector[3] == 0
+    # return vector[0] == 0 and vector[1] == 0 and vector[2] == 0
 
 
-im = imageio.imread('pimentoes.png')
+im = imageio.imread('images/pimentoes.png')
 
 counter_red = 0
 counter_yellow = 0
@@ -35,12 +37,14 @@ counter_green = 0
 counter_valid = 0
 
 print('Executando...')
+initial_time = datetime.datetime.now()
+# print(initial_time)
 for i in range(0, len(im)):
     for j in range(0, len(im[i])):
-        #print(im[i][j])
+        # print(im[i][j])
         if not is_blank(im[i][j]):
             counter_valid += 1
-            v = colorsys.rgb_to_hsv(im[i][j][0]/255, im[i][j][1]/255, im[i][j][2]/255)
+            v = colorsys.rgb_to_hsv(im[i][j][0] / 255, im[i][j][1] / 255, im[i][j][2] / 255)
             if is_red(v):
                 counter_red += 1
                 im[i][j][0] = 255
@@ -64,11 +68,11 @@ for i in range(0, len(im)):
                 im[i][j][1] = 255
                 im[i][j][2] = 255
 
-imageio.imwrite('im.png', im)
+imageio.imwrite('resultado.png', im)
 tamanho = len(im) * len(im[0])
-por_red = (counter_red/counter_valid)*100
-por_green = (counter_green/counter_valid)*100
-por_yellow = (counter_yellow/counter_valid)*100
+por_red = (counter_red / counter_valid) * 100
+por_green = (counter_green / counter_valid) * 100
+por_yellow = (counter_yellow / counter_valid) * 100
 
 print('Por. Vermelho: %f %%  Por. Verde: %f %%  Por. Amarelo: %f %%' % (por_red, por_green, por_yellow))
 
@@ -81,6 +85,5 @@ elif por_green > por_red and por_green > por_yellow:
     print('Verde')
 else:
     print('Amarelo')
-
-
-
+final_time = datetime.datetime.now() - initial_time
+print('Tempo: %s' % final_time.total_seconds())
